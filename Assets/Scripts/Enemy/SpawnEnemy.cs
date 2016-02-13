@@ -22,42 +22,17 @@ public class SpawnEnemy : MonoBehaviour {
         DontDestroyOnLoad(gameObject);
     }
 
+
+    private GameManager gameManager;
     public List<GameObject> spawnSpots;
-    public List<EnemyLevel> levels;
-
-    private EnemyLevel currentlevel;
-
     private bool enemySpawnBlock = true;
 
-
-    // initializes the current level and switches to next one
-    private void initLevel()
-    {
-        if (currentlevel == null)
-        {
-            currentlevel = levels[0];
-            currentlevel.enemiesLeft = currentlevel.maxEnemies;
-        }
-        
-    }
-
-    private void nextLevel()
-    {
-        //if (enemies[currentlevel.level + 1] != null)
-        if (currentlevel.level < levels.Count-1)
-        {
-            currentlevel = levels[currentlevel.level + 1];
-            currentlevel.enemiesLeft = currentlevel.maxEnemies;
-            print("moved to a new level " + currentlevel.level);
-
-        }
-    }
 
     // spawns the enemies
     private void spawnEnemies()
     {
         // stops if all enemies spawned for this level
-        if (currentlevel.maxEnemies > currentlevel.spawnedEnemies)
+        if (gameManager.currentlevel.maxEnemies > gameManager.currentlevel.spawnedEnemies)
         {       
             // blocking function
             if (enemySpawnBlock)
@@ -78,12 +53,8 @@ public class SpawnEnemy : MonoBehaviour {
                         spawnEnemy(spawnSpots[spawnspot]);
 
                         spawned = true;
-                        currentlevel.spawnedEnemies++;
-                        // if all enemies dead in this level, move on to next one
-                        //  if (currentlevel.enemies-- == 0)
-                        //  {
-                        //      initLevel();
-                        //  }
+                        gameManager.currentlevel.spawnedEnemies++;
+
                     }
 
                     // exits from a loop in case all spawn places busy
@@ -91,7 +62,7 @@ public class SpawnEnemy : MonoBehaviour {
                         break;
                 }
 
-                StartCoroutine(spawnWait(currentlevel.delay));
+                StartCoroutine(spawnWait(gameManager.currentlevel.delay));
             }
 
         }
@@ -103,10 +74,10 @@ public class SpawnEnemy : MonoBehaviour {
         Vector2 position = spawnspot.transform.position;
 
         // randomly choose enemy
-        int enemy = Random.Range(0, currentlevel.enemyPrefs.Count);
+        int enemy = Random.Range(0, gameManager.currentlevel.enemyPrefs.Count);
 
         // instaciate
-        GameObject instance = Instantiate(currentlevel.enemyPrefs[enemy], position, Quaternion.identity) as GameObject;
+        GameObject instance = Instantiate(gameManager.currentlevel.enemyPrefs[enemy], position, Quaternion.identity) as GameObject;
         instance.transform.SetParent(gameObject.transform);
         MoveEnemy mv = instance.GetComponentInChildren<MoveEnemy>();
         mv.spawnArea = spawnspot;
@@ -118,38 +89,15 @@ public class SpawnEnemy : MonoBehaviour {
         enemySpawnBlock = true;
     }
 
-    // enemy dies and changes level
-    public void enemyDie()
-    {
-        
-        if (--currentlevel.enemiesLeft <= 0)
-        {
-            nextLevel();
-        }
-    }
-
 
     // Use this for initialization
     void Start () {
-        initLevel();
-	}
+        gameManager = GameManager.instance;
+    }
 	
 	// Update is called once per frame
 	void Update () {
         spawnEnemies();
 
     }
-}
-
-[System.Serializable]
-public class EnemyLevel
-{
-    public int maxEnemies;
-    
-    public float delay;
-    public int level;
-    public List<GameObject> enemyPrefs;
-
-    public int spawnedEnemies = 0;
-    public int enemiesLeft;
 }

@@ -67,7 +67,8 @@ public class MoveEnemy : MonoBehaviour {
 
     void OnDestroy()
     {
-        SpawnEnemy spawnEnemy = SpawnEnemy.instance;
-        spawnEnemy.enemyDie();
+        GameManager gameManager = GameManager.instance;
+        gameManager.enemyDie();
+
     }
 }
