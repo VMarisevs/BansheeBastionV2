@@ -23,7 +23,7 @@ public class SpawnEnemy : MonoBehaviour {
     }
 
     public List<GameObject> spawnSpots;
-    public List<EnemyLevel> enemies;
+    public List<EnemyLevel> levels;
 
     private EnemyLevel currentlevel;
 
@@ -35,7 +35,7 @@ public class SpawnEnemy : MonoBehaviour {
     {
         if (currentlevel == null)
         {
-            currentlevel = enemies[0];
+            currentlevel = levels[0];
             currentlevel.enemiesLeft = currentlevel.maxEnemies;
         }
         
@@ -44,9 +44,9 @@ public class SpawnEnemy : MonoBehaviour {
     private void nextLevel()
     {
         //if (enemies[currentlevel.level + 1] != null)
-        if (currentlevel.level < enemies.Count-1)
+        if (currentlevel.level < levels.Count-1)
         {
-            currentlevel = enemies[currentlevel.level + 1];
+            currentlevel = levels[currentlevel.level + 1];
             currentlevel.enemiesLeft = currentlevel.maxEnemies;
             print("moved to a new level " + currentlevel.level);
 
@@ -103,10 +103,10 @@ public class SpawnEnemy : MonoBehaviour {
         Vector2 position = spawnspot.transform.position;
 
         // randomly choose enemy
-        int enemy = Random.Range(0, currentlevel.visualization.Count);
+        int enemy = Random.Range(0, currentlevel.enemyPrefs.Count);
 
         // instaciate
-        GameObject instance = Instantiate(currentlevel.visualization[enemy], position, Quaternion.identity) as GameObject;
+        GameObject instance = Instantiate(currentlevel.enemyPrefs[enemy], position, Quaternion.identity) as GameObject;
         instance.transform.SetParent(gameObject.transform);
         MoveEnemy mv = instance.GetComponentInChildren<MoveEnemy>();
         mv.spawnArea = spawnspot;
@@ -145,9 +145,11 @@ public class SpawnEnemy : MonoBehaviour {
 public class EnemyLevel
 {
     public int maxEnemies;
-    public int spawnedEnemies = 0;
-    public int enemiesLeft;
+    
     public float delay;
     public int level;
-    public List<GameObject> visualization;
+    public List<GameObject> enemyPrefs;
+
+    public int spawnedEnemies = 0;
+    public int enemiesLeft;
 }
