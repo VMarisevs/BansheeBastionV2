@@ -23,9 +23,9 @@ public class GameManager : MonoBehaviour {
     }
 
     public List<EnemyLevel> levels;
-
     public EnemyLevel currentlevel { get; private set; }
 
+    public List<GameObject> towersList { get; private set; }
 
 
     // initializes the current level and switches to next one
@@ -61,9 +61,21 @@ public class GameManager : MonoBehaviour {
         }
     }
 
+    // towers
+    public void addTower(GameObject tower)
+    {
+        towersList.Add(tower);
+    }
+
+    public void removeTower(GameObject tower)
+    {
+        towersList.Remove(tower);
+    }
+
     // Use this for initialization
     void Start()
     {
         initLevel();
+        towersList = new List<GameObject>();
     }
 }

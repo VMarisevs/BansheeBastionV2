@@ -45,7 +45,11 @@ public class PlaceTower : MonoBehaviour {
 
 
             tower = (GameObject) Instantiate(towerPrefab, transform.position, Quaternion.identity);
-           
+
+            GameManager gm = GameManager.instance;
+            gm.addTower(tower);
+
+
             AudioSource audioSource = gameObject.GetComponent<AudioSource>();
             audioSource.PlayOneShot(audioSource.clip);
 
